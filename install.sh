@@ -38,14 +38,28 @@ echo ""
 echo "Available Go + Python combinations:"
 echo ""
 
-# Use jq if available, otherwise parse manually
+# Parse versions (compatible with bash 3.2+)
+GO_VERSIONS=()
+PY_VERSIONS=()
+
 if command -v jq &> /dev/null; then
-    mapfile -t GO_VERSIONS < <(echo "$VERSIONS_JSON" | jq -r '.combinations[].go_version')
-    mapfile -t PY_VERSIONS < <(echo "$VERSIONS_JSON" | jq -r '.combinations[].python_version')
+    # Use jq if available
+    while IFS= read -r line; do
+        GO_VERSIONS+=("$line")
+    done < <(echo "$VERSIONS_JSON" | jq -r '.combinations[].go_version')
+
+    while IFS= read -r line; do
+        PY_VERSIONS+=("$line")
+    done < <(echo "$VERSIONS_JSON" | jq -r '.combinations[].python_version')
 else
     # Fallback: simple grep-based parsing
-    GO_VERSIONS=($(echo "$VERSIONS_JSON" | grep -o '"go_version": "[^"]*"' | cut -d'"' -f4))
-    PY_VERSIONS=($(echo "$VERSIONS_JSON" | grep -o '"python_version": "[^"]*"' | cut -d'"' -f4))
+    while IFS= read -r line; do
+        GO_VERSIONS+=("$line")
+    done < <(echo "$VERSIONS_JSON" | grep -o '"go_version": "[^"]*"' | cut -d'"' -f4)
+
+    while IFS= read -r line; do
+        PY_VERSIONS+=("$line")
+    done < <(echo "$VERSIONS_JSON" | grep -o '"python_version": "[^"]*"' | cut -d'"' -f4)
 fi
 
 # Build combinations array
