@@ -1,0 +1,121 @@
+{
+  "name": "Go + Python Development Container",
+  "image": "ghcr.io/racecarparts/devcontainer:go1.23.2-py3.12.7",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "root",
+
+  // Git configuration via environment variables
+  "containerEnv": {
+    "GIT_USER_NAME": "Your Name",
+    "GIT_USER_EMAIL": "your.email@example.com"
+  },
+
+  // Enable Docker from host (allows running docker-compose without nesting)
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+  },
+
+  // Configure git from environment variables
+  "postCreateCommand": "git config --global user.name \"${GIT_USER_NAME}\" && git config --global user.email \"${GIT_USER_EMAIL}\"",
+
+  // Automatically start project services if docker-compose.yml exists
+  "postStartCommand": "if [ -f docker-compose.yml ]; then docker-compose up -d; fi",
+
+  // Uncomment to mount your host .gitconfig instead of using environment variables:
+  // "mounts": [
+  //   "source=${localEnv:HOME}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached",
+  //   "source=${localEnv:HOME}/.gitignore_global,target=/root/.gitignore_global,type=bind,consistency=cached"
+  // ],
+
+  // Uncomment to use custom post-create scripts from .devcontainer/post-create-scripts/:
+  // "mounts": [
+  //   "source=${localWorkspaceFolder}/.devcontainer/post-create-scripts,target=/workspace/.devcontainer/post-create-scripts,type=bind,consistency=cached"
+  // ],
+  // "postCreateCommand": "[ -d .devcontainer/post-create-scripts ] && chmod +x .devcontainer/post-create-scripts/*.sh && for script in .devcontainer/post-create-scripts/*.sh; do echo 'Running' $script; $script; done",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "black-formatter.args": [
+          "line-length",
+          "88"
+        ],
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "editor.formatOnSave": true,
+        "python.pythonPath": "/root/.pyenv/shims/python3",
+        "python.defaultInterpreterPath": "/root/.pyenv/versions/${PYTHON_VERSION}/bin/python",
+        "terminal.integrated.fontFamily": "MesloLGS NF",
+        "python.testing.pytestEnabled": true,
+        "python.testing.unittestEnabled": false,
+        "python.testing.nosetestsEnabled": false,
+        "python.testing.pytestPath": "pytest",
+        "python.testing.pytestArgs": [
+          "crm/tests"
+        ],
+        "python.linting.enabled": true,
+        "python.linting.flake8Enabled": true,
+        "goStructTagAutogen.tagSuggestion": {
+          "json": {
+            "cases": [
+              "camel",
+              "snake"
+            ],
+            "options": [
+              "-",
+              "omitempty"
+            ]
+          },
+          "bson": {
+            "cases": [
+              "snake"
+            ],
+            "options": [
+              "-",
+              "omitempty"
+            ]
+          },
+          "binding": {
+            "options": [
+              "required"
+            ]
+          },
+          "validate": {
+            "options": [
+              "required"
+            ]
+          },
+          "env": {
+            "cases": [
+              "uppersnake"
+            ]
+          },
+          "header": {
+            "cases": [
+              "none",
+              "snake",
+              "camel",
+              "uppersnake"
+            ]
+          }
+        }
+      },
+      "extensions": [
+        "eamodio.gitlens",
+        "ms-python.python",
+        "ms-python.black-formatter",
+        "ms-python.flake8",
+        "ms-python.debugger",
+        "ms-python.vscode-pylance",
+        "ms-azuretools.vscode-docker",
+        "adpyke.vscode-sql-formatter",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg",
+        "rangav.vscode-thunder-client",
+        "maxnatchanon.go-struct-tag-autogen",
+        "yzhang.markdown-all-in-one",
+        "editorconfig.editorconfig",
+        "ryanluker.vscode-coverage-gutters",
+        "batisteo.vscode-django"
+      ]
+    }
+  }
+}
