@@ -16,7 +16,7 @@ echo ""
 # Check if .devcontainer already exists
 if [ -d ".devcontainer" ]; then
     echo "⚠️  .devcontainer directory already exists!"
-    read -p "Overwrite? (y/N): " -n 1 -r
+    read -p "Overwrite? (y/N): " -n 1 -r REPLY </dev/tty
     echo
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
         echo "Aborted."
@@ -61,7 +61,7 @@ for combo in "${COMBINATIONS[@]}"; do
 done
 
 echo ""
-read -p "Select version (1-${#COMBINATIONS[@]}): " SELECTION
+read -p "Select version (1-${#COMBINATIONS[@]}): " SELECTION </dev/tty
 
 # Validate selection
 if ! [[ "$SELECTION" =~ ^[0-9]+$ ]] || [ "$SELECTION" -lt 1 ] || [ "$SELECTION" -gt "${#COMBINATIONS[@]}" ]; then
@@ -82,14 +82,14 @@ echo ""
 
 # Prompt for project name
 DEFAULT_PROJECT_NAME=$(basename "$PWD")
-read -p "Project name (default: $DEFAULT_PROJECT_NAME): " PROJECT_NAME
+read -p "Project name (default: $DEFAULT_PROJECT_NAME): " PROJECT_NAME </dev/tty
 PROJECT_NAME="${PROJECT_NAME:-$DEFAULT_PROJECT_NAME}"
 
 echo ""
 
 # Prompt for git config
-read -p "Enter your Git name (e.g., John Doe): " GIT_NAME
-read -p "Enter your Git email (e.g., john@example.com): " GIT_EMAIL
+read -p "Enter your Git name (e.g., John Doe): " GIT_NAME </dev/tty
+read -p "Enter your Git email (e.g., john@example.com): " GIT_EMAIL </dev/tty
 
 if [ -z "$GIT_NAME" ] || [ -z "$GIT_EMAIL" ]; then
     echo "⚠️  Git name and email are required"
