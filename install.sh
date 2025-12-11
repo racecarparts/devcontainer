@@ -40,18 +40,19 @@ echo ""
 
 # Use jq if available, otherwise parse manually
 if command -v jq &> /dev/null; then
-    COMBINATIONS=$(echo "$VERSIONS_JSON" | jq -r '.combinations[] | "Go \(.go_version) + Python \(.python_version)"')
-    GO_VERSIONS=($(echo "$VERSIONS_JSON" | jq -r '.combinations[].go_version'))
-    PY_VERSIONS=($(echo "$VERSIONS_JSON" | jq -r '.combinations[].python_version'))
+    mapfile -t GO_VERSIONS < <(echo "$VERSIONS_JSON" | jq -r '.combinations[].go_version')
+    mapfile -t PY_VERSIONS < <(echo "$VERSIONS_JSON" | jq -r '.combinations[].python_version')
 else
     # Fallback: simple grep-based parsing
     GO_VERSIONS=($(echo "$VERSIONS_JSON" | grep -o '"go_version": "[^"]*"' | cut -d'"' -f4))
     PY_VERSIONS=($(echo "$VERSIONS_JSON" | grep -o '"python_version": "[^"]*"' | cut -d'"' -f4))
-    COMBINATIONS=()
-    for i in "${!GO_VERSIONS[@]}"; do
-        COMBINATIONS+=("Go ${GO_VERSIONS[$i]} + Python ${PY_VERSIONS[$i]}")
-    done
 fi
+
+# Build combinations array
+COMBINATIONS=()
+for i in "${!GO_VERSIONS[@]}"; do
+    COMBINATIONS+=("Go ${GO_VERSIONS[$i]} + Python ${PY_VERSIONS[$i]}")
+done
 
 # Display options
 i=1
